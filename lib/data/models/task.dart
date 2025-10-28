@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 class Task {
   final int? id;
   final String title;
@@ -8,7 +10,7 @@ class Task {
   final String visibility; //private or public
   final DateTime reminderTime;
 
-  Task({
+  const Task({
     this.id,
     required this.title,
     required this.deadline,
@@ -18,4 +20,8 @@ class Task {
     required this.visibility,
     required this.reminderTime,
   });
+
+  String getDeadline() {
+    return DateFormat('yyyy/MM/dd HH:mm').format(deadline);
+  }
 }
