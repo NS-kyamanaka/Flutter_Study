@@ -17,6 +17,24 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
+          Container(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                TextField(
+                  decoration: InputDecoration(
+                    labelText: 'タスク'
+                  ),
+                ),
+                Row(
+                  children: [
+                    TextField(),//期限
+                    TextField(),//リマインドする時間〇時間前
+                  ],
+                )
+              ],
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: tasks.length,
