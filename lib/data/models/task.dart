@@ -2,13 +2,13 @@ import 'package:intl/intl.dart';
 
 class Task {
   final int? id;
-  final String title;
-  final DateTime deadline;
-  final bool isCompleted;
-  final DateTime createdAt;
-  final String userId; //作成したユーザーのID
+  final String title;//タイトル
+  final DateTime deadline;//期限日時
+  final bool isCompleted;//完了したか
+  final DateTime createdAt;//作成日
+  final String userId; //作成したユーザーのユーザーID
   final String visibility; //private or public
-  final DateTime reminderTime;
+  final DateTime reminderTime;//期限前にリマインドする
 
   const Task({
     this.id,
