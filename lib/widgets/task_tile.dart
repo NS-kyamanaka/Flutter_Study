@@ -13,7 +13,7 @@ class TaskTile extends StatelessWidget {
       ),
       child: ListTile(
         title: Text(task.title),
-        subtitle: Text(task.getDeadline()),
+        subtitle: Text('期限: ${task.getDeadline()}'),
       ),
     );
   }
