@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_study/controller/notification_controller.dart';
+import 'package:flutter_study/widgets/task_input_form.dart';
 import 'package:flutter_study/widgets/task_tile.dart';
 import '../data/models/task.dart';
+import '../controller/task_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,19 +13,12 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   List<Task> tasks = [];
-  final _titleController = TextEditingController();
-  final _deadlineController = TextEditingController();
-  final _noticeController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _titleController.dispose();
-    super.dispose();
+  void _addNewTask(Task task) async {
+    setState(() {
+      tasks.add(task);
+    });
+    await TaskController.addTask(task);
   }
 
   @override
@@ -40,60 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(labelText: 'タスク名'),
-            ),
-            const SizedBox(height: 16.0),
-
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: _deadlineController,
-                    readOnly: true,
-                    onTap: () => {},
-                  ),
-                ),
-                const SizedBox(width: 16.0),
-                Expanded(
-                  child: TextFormField(
-                    controller: _noticeController,
-                    readOnly: true,
-                    onTap: () => {},
-                    decoration: const InputDecoration(
-                      labelText: '通知(分前)',
-                      suffixIcon: Icon(Icons.alarm),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16.0),
-            TextButton(
-              onPressed: () async {
-                late Task newTask;
-                setState(() {
-                  newTask = Task.create(
-                    title: _titleController.text,
-                    deadline: DateTime(2025, 10, 30),
-                    noticeMinutes: 60,
-                  );
-                  tasks.add(newTask);
-                });
-                final now = DateTime.now();
-                final later = now.add(const Duration(seconds: 5));
-
-                NotificationController.scheduleNotification(
-                  id: 11,
-                  title: newTask.title,
-                  body: '期限まであと${newTask.noticeMinutes}分です',
-                  scheduledTime: later,
-                );
-                print("時間は${later}");
-              },
-              child: Text('登録'),
-            ),
+            TaskInputForm(onSubmit: _addNewTask),
             Expanded(
               child: ListView.builder(
                 itemCount: tasks.length,
