@@ -20,6 +20,7 @@ class _TaskInputFormState extends State<TaskInputForm> {
     final now = DateTime.now();
     final pickedDate = await showDatePicker(
       context: context,
+      initialDate: now,
       firstDate: now,
       lastDate: DateTime(now.year + 1),
     );
@@ -104,10 +105,9 @@ class _TaskInputFormState extends State<TaskInputForm> {
                     DropdownMenuItem(value: 60, child: Text('60分前')),
                   ],
                 ),
+                ElevatedButton(onPressed: _submit, child: Text('追加')),
               ],
             ),
-            const Spacer(),
-            ElevatedButton(onPressed: _submit, child: Text('追加'))
           ],
         ),
       ),

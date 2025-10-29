@@ -9,7 +9,7 @@ class TaskController {
     );
 
     await NotificationController.scheduleNotification(
-      id: DateTime.now().microsecondsSinceEpoch ~/ 1000,
+      id: DateTime.now().microsecondsSinceEpoch % 100000,
       title: task.title,
       body: '期限まで${task.noticeMinutes}分です!',
       scheduledTime: scheduledTime,
