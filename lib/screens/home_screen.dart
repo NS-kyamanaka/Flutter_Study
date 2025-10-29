@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_study/controller/notification_controller.dart';
 import 'package:flutter_study/widgets/task_tile.dart';
 import '../data/models/task.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
-  
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -18,7 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    
   }
 
   @override
@@ -72,14 +72,25 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16.0),
             TextButton(
               onPressed: () async {
+                late Task newTask;
                 setState(() {
-                  final newTask = Task.create(
-                  title: _titleController.text,
-                  deadline: DateTime(2025, 10, 30),
-                  notice: 60,
-                );
-                tasks.add(newTask);
+                  newTask = Task.create(
+                    title: _titleController.text,
+                    deadline: DateTime(2025, 10, 30),
+                    notice: 60,
+                  );
+                  tasks.add(newTask);
                 });
+                final now = DateTime.now();
+                final later = now.add(const Duration(seconds: 5));
+
+                NotificationController.scheduleNotification(
+                  id: 11,
+                  title: newTask.title,
+                  body: 'テスト通知',
+                  scheduledTime: later,
+                );
+                print("時間は${later}");
               },
               child: Text('登録'),
             ),

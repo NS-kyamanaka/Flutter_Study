@@ -1,67 +1,99 @@
-// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
-// class NotificationController {
-//   static final FlutterLocalNotificationsPlugin _notificationsPlugin
-//    = FlutterLocalNotificationsPlugin();
-
-// //権限の取得
-// bool? permission = await _notificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()!.requestNotificationsPermission();
-
-
-
-// }
-
-
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter/material.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 class NotificationController {
+  //通知プラグイン
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  // 💡 Androidで必須な通知チャンネルを定義
+  //通知チャンネル
   static const AndroidNotificationChannel _channel = AndroidNotificationChannel(
-    'high_importance_channel', // チャンネルID (一意である必要があります)
-    '高重要度通知', // ユーザーに見せるチャンネル名
-    description: 'このチャンネルはタスクリマインダーに使用されます。', // ユーザーに見せる説明文
-    importance: Importance.max, // 通知の重要度（最優先）
+    'high_importance_channel',
+    '高重要度通知',
+    description: 'あいうえお',
+    importance: Importance.max,
   );
 
+  //初期化処理
   static Future<void> initNotification() async {
-    // 1. Androidの初期化設定
     const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher'); // アプリのランチャーアイコンを指定
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    const InitializationSettings initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-    );
+    const InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
 
-    // 💡 初期化処理を実行
-    await _notificationsPlugin.initialize(
-      initializationSettings,
-      // onDidReceiveNotificationResponse: ... (通知タップ時の処理)
-    );
+    await _notificationsPlugin.initialize(initializationSettings);
 
-    // 2. Android通知チャンネルの作成 (アプリインストール後に一度だけ実行されるのが理想)
-    final AndroidFlutterLocalNotificationsPlugin? androidImplementation =
-        _notificationsPlugin.resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>();
+    final androidImplementation = _notificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >();
 
     if (androidImplementation != null) {
       await androidImplementation.createNotificationChannel(_channel);
-      
-      // 3. Android 13 (API 33) 以降の権限要求
-      // Future<bool?> を返す。権限が許可されたか確認
-      final bool? granted = 
-          await androidImplementation.requestNotificationsPermission();
-      
+
+      final bool? granted = await androidImplementation
+          .requestNotificationsPermission();
+
       if (granted == true) {
-        print("Android通知権限が許可されました。");
+        print('通知権限が許可されました');
       } else {
-        print("Android通知権限が拒否されました。");
+        print('通知権限が拒否されました');
       }
     }
-    
-    print('Android通知プラグインの初期化が完了しました。');
+
+    print('通知プラグインの初期化が完了しました');
+  }
+
+  //通知を表示するメソッド
+  static Future<void> showNotification({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+          'high_importance_channel',
+          '高重要度通知',
+          channelDescription: 'このチャンネルはタスクリマインダーに使用される',
+          importance: Importance.max,
+          priority: Priority.high,
+        );
+
+    const NotificationDetails details = NotificationDetails(
+      android: androidDetails,
+    );
+
+    await _notificationsPlugin.show(id, title, body, details);
+  }
+
+  //スケジュール通知
+  static Future<void> scheduleNotification({
+    required int id,
+    required String title,
+    required String body,
+    required DateTime scheduledTime,
+  }) async {
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+          'high_importance_channel',
+          '高重要度通知',
+          channelDescription: 'このチャンネルタスクリマインダーに使用されます',
+          importance: Importance.max,
+          priority: Priority.high,
+        );
+
+    const NotificationDetails details = NotificationDetails(
+      android: androidDetails,
+    );
+
+    await _notificationsPlugin.zonedSchedule(
+      id,
+      title,
+      body,
+      tz.TZDateTime.from(scheduledTime, tz.local),
+      details,
+      androidScheduleMode: AndroidScheduleMode.inexact,
+    );
   }
 }
