@@ -6,7 +6,7 @@ class Task {
   final DateTime deadline;//期限日時
   final bool isCompleted;//完了したか
   final DateTime createdAt;//作成日
-  final DateTime reminderTime;//期限前にリマインドする
+  final int noticeMinutes;//期限前にリマインドする
 
   const Task({
     this.id,
@@ -14,7 +14,7 @@ class Task {
     required this.deadline,
     required this.isCompleted,
     required this.createdAt,
-    required this.reminderTime,
+    required this.noticeMinutes,
   });
 
   String getDeadline() {
@@ -24,11 +24,9 @@ class Task {
   factory Task.create({
     required String title,
     required DateTime deadline,
-    required int notice,
+    required int noticeMinutes,
   }){
-    final Duration duration = Duration(minutes: notice);
-    DateTime reminderTime = deadline.subtract(duration);
     return  Task(title: title, deadline: deadline, isCompleted: false, 
-    createdAt: DateTime.now(), reminderTime: reminderTime);
+    createdAt: DateTime.now(), noticeMinutes: noticeMinutes);
   }
 }

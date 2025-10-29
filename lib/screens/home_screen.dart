@@ -77,7 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   newTask = Task.create(
                     title: _titleController.text,
                     deadline: DateTime(2025, 10, 30),
-                    notice: 60,
+                    noticeMinutes: 60,
                   );
                   tasks.add(newTask);
                 });
@@ -87,7 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 NotificationController.scheduleNotification(
                   id: 11,
                   title: newTask.title,
-                  body: 'テスト通知',
+                  body: '期限まであと${newTask.noticeMinutes}分です',
                   scheduledTime: later,
                 );
                 print("時間は${later}");
